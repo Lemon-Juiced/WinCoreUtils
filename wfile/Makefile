@@ -1,4 +1,4 @@
-BINARY := file
+BINARY := wfile
 PKG := .
 OUT := ./$(BINARY)
 EXT := .exe

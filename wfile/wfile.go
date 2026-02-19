@@ -76,18 +76,18 @@ func detectType(path string) (ext string, typ string, err error) {
 }
 
 /**
- * file - A simple file type detector
+ * wfile - A simple file type detector
  *
  * This program takes one or more file paths as command-line arguments and attempts to determine their types.
  *
  * Usage:
- *  file <filename1> [filename2 ...]
+ *  wfile <filename1> [filename2 ...]
  *
  * @author: Lemon
  */
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "Usage: file <filename>")
+		fmt.Fprintln(os.Stderr, "Usage: wfile <filename>")
 		os.Exit(2)
 	}
 
