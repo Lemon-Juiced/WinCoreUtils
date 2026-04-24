@@ -1,7 +1,7 @@
 <#
 WinCoreUtilsInstaller.ps1
 
-Simple user-scope installer for the WinCoreUtils collection (file, wls, wla, wll).
+Simple user-scope installer for the WinCoreUtils collection (wfile, wls, wla, wll).
 
 Usage:
   - Install for current user (no admin required):
@@ -56,7 +56,7 @@ function Remove-FromPath([string]$folder) {
 }
 
 function Is-AnyRunning {
-    $names = @('wfile', 'wls', 'wla', 'wll')
+    $names = @('donut', 'wfile', 'wls', 'wla', 'wll', 'wpwd')
     foreach ($n in $names) {
         try {
             $p = Get-Process -Name $n -ErrorAction SilentlyContinue
@@ -75,19 +75,23 @@ function Perform-Install {
 
     # Map destination exe names to their relative source paths inside the repo
     $exeMap = @{
+        'donut.exe' = 'donut\donut.exe'
         'wfile.exe' = 'wfile\wfile.exe'
         'wls.exe' = 'wls\wls.exe'
         'wla.exe' = 'wls\wla.exe'
         'wll.exe' = 'wls\wll.exe'
+        'wpwd.exe' = 'wpwd\wpwd.exe'
     }
 
+    # Ensure we install in a stable, alphabetical order
+    $exeKeys = $exeMap.Keys | Sort-Object
     $foundAny = $false
-    foreach ($pair in $exeMap.GetEnumerator()) {
-        $src = Join-Path $PSScriptRoot $pair.Value
+    foreach ($exe in $exeKeys) {
+        $src = Join-Path $PSScriptRoot $exeMap[$exe]
         if (Test-Path $src) { $foundAny = $true; break }
     }
     if (-not $foundAny) {
-        Write-Error "Could not find any of the expected executables in the project subfolders. Ensure the build output exists under 'file/' and 'wls/' and try again."
+        Write-Error "Could not find any of the expected executables in the project subfolders. Ensure the build output exists under 'wfile/', 'wls/', 'donut/', and 'wpwd/' and try again."
         exit 1
     }
 
@@ -95,9 +99,8 @@ function Perform-Install {
         New-Item -ItemType Directory -Path $destBase -Force | Out-Null
     }
 
-    foreach ($pair in $exeMap.GetEnumerator()) {
-        $exe = $pair.Key
-        $rel = $pair.Value
+    foreach ($exe in $exeKeys) {
+        $rel = $exeMap[$exe]
         $sourceExePath = Join-Path $PSScriptROOT $rel
         if (-not (Test-Path $sourceExePath)) {
             Write-Host "Skipping: $exe (not found at $sourceExePath)"
@@ -137,7 +140,7 @@ function Perform-Uninstall {
 }
 
 function Show-Help {
-    Write-Host "WinCoreUtils Installer - user-scoped installer for wfile, wls, wla, wll"
+    Write-Host "WinCoreUtils Installer - user-scoped installer for donut, wfile, wls, wla, wll, wpwd"
     Write-Host ""
     Write-Host "Usage: .\WinCoreUtilsInstaller.ps1 [options]"
     Write-Host "  -Force       Overwrite existing installation when installing"

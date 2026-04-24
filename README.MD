@@ -29,6 +29,7 @@ Usage (run from the folder containing the executables and `WinCoreUtilsInstaller
 
 ### Notes:
 - The script expects the .exe files in the correct subdirectory relative to `WinCoreUtilsInstaller.ps1` when run.
+  - /donut/donut.exe
   - /wfile/wfile.exe
   - /wls/wla.exe
   - /wls/wll.exe
